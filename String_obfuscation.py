@@ -2,7 +2,7 @@
 # Title:  PowerShell String Obfuscator		    
 # Author: 0xB4DC0DE		                		
 # Date:   22 June 2024		            		
-# Ver:	  1.1.1				                   	
+# Ver:	  1.1.2				                   	
 #===============================================#
 
 import random, base64, gzip
@@ -36,7 +36,7 @@ def random_var(size):
     
 def encode_payload(input_string):
     input_string = gzip.compress(bytes(input_string, 'utf-8'))
-    return_string = "&(&([ScriptBlock]::Create((New-Object IO.StreamReader(New-Object IO.Compression.GzipStream((New-Object IO.MemoryStream(,[Convert]::FromBase64String('" + base64.b64encode(input_string).decode('ascii') +"'))),[IO.Compression.CompressionMode]::Decompress))).ReadToEnd())))"
+    return_string = "&([ScriptBlock]::Create((New-Object IO.StreamReader(New-Object IO.Compression.GzipStream((New-Object IO.MemoryStream(,[Convert]::FromBase64String('" + base64.b64encode(input_string).decode('ascii') +"'))),[IO.Compression.CompressionMode]::Decompress))).ReadToEnd()))"
     return return_string
 
 def create_string(input_string):
@@ -59,4 +59,14 @@ def create_string(input_string):
     output = output[:-1]
     return encode_payload(output)
     
-print(create_string("irm"))
+string = "irm -uri example.com".split(" ")
+
+build_string = "&("
+for i in string:
+    if i[0] == "-":
+        build_string += ")" +i + "("
+    else:
+        build_string += create_string(i) 
+build_string += ")"        
+
+print(encode_payload(build_string))
