@@ -66,7 +66,6 @@ for i in string:
     if i[0] == "-":
         build_string += ")" +i + "("
     elif i == "|":
-        print('here')
         build_string += ")"+ i +"&("
     else:
         build_string += create_string(i) 
