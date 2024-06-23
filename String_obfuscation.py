@@ -1,11 +1,11 @@
 #===============================================#
-# Title:  PowerShell String Obfuscator		#
-# Author: 0xB4DC0DE				#
-# Date:   19 June 2024				#
-# Ver:	  1.1					#
+# Title:  PowerShell String Obfuscator		    #
+# Author: 0xB4DC0DE		                		#
+# Date:   22 June 2024		            		#
+# Ver:	  1.1.1				                   	#
 #===============================================#
 
-import random, base64
+import random, base64, gzip
 
 def create_key_arays(input_string):
     xor_key = []
@@ -33,6 +33,12 @@ def random_var(size):
         else:
             rand_var_name += chr(random.randrange(97,122))
     return rand_var_name
+    
+def encode_payload(input_string):
+    input_string = gzip.compress(bytes(input_string, 'utf-8'))
+    return_string = "&(&([ScriptBlock]::Create((New-Object IO.StreamReader(New-Object IO.Compression.GzipStream((New-Object IO.MemoryStream(,[Convert]::FromBase64String('" + base64.b64encode(input_string).decode('ascii') +"'))),[IO.Compression.CompressionMode]::Decompress))).ReadToEnd())))"
+    return return_string
+
 def create_string(input_string):
     random.seed(input_string)
     input_length = len(input_string)
@@ -50,10 +56,7 @@ def create_string(input_string):
     output += "')-f"
     for counter,enc_char in enumerate(encrypted_chars):
         output += "[char]($" + rand_var_name + "[" + str(counter) + "]-bxor" + str(enc_char) + "),"
-    output = output[:-1].encode('ascii')
-    return output 
-def encode_payload(input_string):
-    return_string = "&([ScriptBlock]::Create([System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String('" + base64.b64encode(input_string).decode('ascii') +"'))))"
-    return return_string
-
-print(encode_payload(create_string("Hello World!")))
+    output = output[:-1]
+    return encode_payload(output)
+    
+print(create_string("irm"))
