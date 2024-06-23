@@ -1,8 +1,8 @@
 #===============================================#
-# Title:  PowerShell String Obfuscator		    #
-# Author: 0xB4DC0DE		                		#
-# Date:   22 June 2024		            		#
-# Ver:	  1.1.1				                   	#
+# Title:  PowerShell String Obfuscator		    
+# Author: 0xB4DC0DE		                		
+# Date:   22 June 2024		            		
+# Ver:	  1.1.1				                   	
 #===============================================#
 
 import random, base64, gzip
